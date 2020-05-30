@@ -24,7 +24,8 @@ const fetchAuthUrl = async (setAuthCode, setLoginState) => {
     
         const { auth_url } = await response.json();
 
-        // figure out how to fix it to close correctly
+        // TODO: if dialogue appears for login, this window will not automatically close. However, if user is already
+        // logged into spotify, the window will close properly
         var authWindow = window.open(auth_url, "authWindow","height=600,width=600,modal=yes,alwaysRaised=yes");
         authWindow.onload = () => {
             var authWindowUrl = new URL(authWindow.location.href);
