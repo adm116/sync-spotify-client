@@ -3,9 +3,8 @@ import './App.css';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { getLoginState, getAuthCode } from './selectors/loginSelectors';
-import { serverLogin } from './thunks/loginThunks';
-import { SERVER_AUTH_URL } from './constants';
-import { LOGIN_ENUM } from './constants';
+import { serverLogin, serverLogout } from './thunks/loginThunks';
+import { SERVER_AUTH_URL, LOGIN_ENUM } from './constants';
 import { updateLoginState, saveAuthCode } from './actions/loginActions';
 
 const AppContainer = styled.div`
@@ -42,7 +41,7 @@ const fetchAuthUrl = async (setAuthCode, setLoginState) => {
     }
 };
 
-const App = ({ loginState, login, setLoginState, authCode, setAuthCode }) => {
+const App = ({ loginState, login, setLoginState, authCode, setAuthCode, setLogoutState }) => {
     var loginContent = <div></div>; // initialize as empty
 
     switch (loginState) {
@@ -67,7 +66,13 @@ const App = ({ loginState, login, setLoginState, authCode, setAuthCode }) => {
         }
 
         default: {
-            loginContent = <div>Logged In!</div>;
+            loginContent =  
+                <div>
+                    <p>Logged In!</p>
+                    <div>
+                        <button onClick={() => setLogoutState()}>Logout</button>
+                    </div>
+                </div>;
         }
     }
 
@@ -86,6 +91,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     login: code => dispatch(serverLogin(code)),
     setLoginState: newLoginState => dispatch(updateLoginState(newLoginState)),
+    setLogoutState: () => dispatch(serverLogout()),
     setAuthCode: code => dispatch(saveAuthCode(code))
 });
 

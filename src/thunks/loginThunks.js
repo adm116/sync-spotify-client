@@ -1,5 +1,5 @@
 import { updateLoginState, saveAuthCode } from '../actions/loginActions';
-import { LOGIN_ENUM, SERVER_LOGIN_URL } from '../constants';
+import { LOGIN_ENUM, SERVER_LOGIN_URL, SERVER_LOGOUT_URL } from '../constants';
 
 export const serverLogin = (code) => async dispatch => {
     try {
@@ -10,7 +10,7 @@ export const serverLogin = (code) => async dispatch => {
                 'Content-Type': 'application/json',
             },
             method: 'post',
-            body,
+            body
         });
 
         if (!response.ok) {
@@ -22,6 +22,22 @@ export const serverLogin = (code) => async dispatch => {
     } catch (e) {
         dispatch(displayAlert(e));
         dispatch(updateLoginState(LOGIN_ENUM.LOGGED_OUT));
+    }
+};
+
+export const serverLogout = () => async dispatch => {
+    try {
+        const response = await fetch(SERVER_LOGOUT_URL, {
+            method: 'post'
+        });
+
+        if (!response.ok) {
+            throw response.statusText;
+        }
+
+        dispatch(updateLoginState(LOGIN_ENUM.LOGGED_OUT));
+    } catch (e) {
+        dispatch(displayAlert(e));
     }
 };
 
