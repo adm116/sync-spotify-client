@@ -1,98 +1,52 @@
 import React from 'react';
 import './App.css';
+import Banner from './components/banner';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { getLoginState, getAuthCode } from './selectors/loginSelectors';
-import { serverLogin, serverLogout } from './thunks/loginThunks';
-import { SERVER_AUTH_URL, LOGIN_ENUM } from './constants';
-import { updateLoginState, saveAuthCode } from './actions/loginActions';
+import { 
+    getLoginState,
+    getDisplayName,
+    getProfilePicture
+} from './selectors/loginSelectors';
+import { serverLogin, serverLogout, startLogin} from './thunks/loginThunks';
 
 const AppContainer = styled.div`
-    margin: 1rem;
     font-family: Arial, Helvetica, sans-serif;
-    color: #222222;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
 `;
 
-const fetchAuthUrl = async (setAuthCode, setLoginState) => {
-    try {
-        const response = await fetch(SERVER_AUTH_URL);
-    
-        if (!response.ok) {
-            throw response.statusText;
-        }
-    
-        const { auth_url } = await response.json();
-
-        // TODO: if dialogue appears for login, this window will not automatically close. However, if user is already
-        // logged into spotify, the window will close properly
-        var authWindow = window.open(auth_url, "authWindow","height=600,width=600,modal=yes,alwaysRaised=yes");
-        authWindow.onload = () => {
-            var authWindowUrl = new URL(authWindow.location.href);
-            var code = authWindowUrl.searchParams.get("code");
-            if (code !== null) {
-                setAuthCode(code);
-                setLoginState(LOGIN_ENUM.LOGGING_IN);
-                authWindow.close();
-            } 
-        }
-
-    } catch (e) {
-        alert(e);
-    }
-};
-
-const App = ({ loginState, login, setLoginState, authCode, setAuthCode, setLogoutState }) => {
-    var loginContent = <div></div>; // initialize as empty
-
-    switch (loginState) {
-        case LOGIN_ENUM.LOGGED_OUT: {
-            loginContent =  
-                <div>
-                    <button onClick={() => fetchAuthUrl(setAuthCode, setLoginState)}>Login</button>
-                </div>;
-
-            break; 
-        }
-
-        case LOGIN_ENUM.LOGGING_IN: {
-            if (authCode !== '') {
-                login(authCode);
-            } else {
-                setLoginState(LOGIN_ENUM.LOGGED_OUT);
-            }
-
-            loginContent = <div>Logging In</div>;
-            break;
-        }
-
-        default: {
-            loginContent =  
-                <div>
-                    <p>Logged In!</p>
-                    <div>
-                        <button onClick={() => setLogoutState()}>Logout</button>
-                    </div>
-                </div>;
-        }
-    }
-
+const App = ({ 
+    currentLoginState, 
+    loginFunction,
+    logoutFunction,
+    currentProfilePicture,
+    currentDisplayName,
+    beginLogin}) => {
     return (
         <AppContainer>
-            {loginContent}
+            <Banner currentLoginState={currentLoginState}
+                    currentProfilePicture={currentProfilePicture}
+                    currentDisplayName={currentDisplayName}
+                    loginFunction={loginFunction}
+                    logoutFunction={logoutFunction}
+                    beginLogin={beginLogin}/>
         </AppContainer>
     );
 };
 
 const mapStateToProps = state => ({
-    loginState: getLoginState(state),
-    authCode: getAuthCode(state)
+    currentLoginState: getLoginState(state),
+    currentProfilePicture: getProfilePicture(state),
+    currentDisplayName: getDisplayName(state)
 });
 
 const mapDispatchToProps = dispatch => ({
-    login: code => dispatch(serverLogin(code)),
-    setLoginState: newLoginState => dispatch(updateLoginState(newLoginState)),
-    setLogoutState: () => dispatch(serverLogout()),
-    setAuthCode: code => dispatch(saveAuthCode(code))
+    loginFunction: (code, callback) => dispatch(serverLogin(code, callback)),
+    logoutFunction: () => dispatch(serverLogout()),
+    beginLogin: () => dispatch(startLogin())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

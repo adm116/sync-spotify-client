@@ -1,8 +1,15 @@
-import { UPDATE_LOGIN_STATE, SAVE_AUTH_CODE } from '../actions/loginActions';
+import { UPDATE_LOGIN_STATE, UPDATE_PROFILE } from '../actions/loginActions';
 import { LOGIN_ENUM } from '../constants';
 
 // set timeout to current time in seconds
-const initialState = { loginState: LOGIN_ENUM.LOGGED_OUT, authCode: ''};
+const initialState = { 
+    loginState: LOGIN_ENUM.LOGGED_OUT, 
+    profile: {
+        displayName: null,
+        picture: null,
+        username: null
+    }
+};
 
 export const user = (state = initialState, action) => {
     const { type, payload } = action;
@@ -17,12 +24,16 @@ export const user = (state = initialState, action) => {
             };
         }
 
-        case SAVE_AUTH_CODE: {
-            const { code } = payload;
+        case UPDATE_PROFILE: {
+            const { displayName: name, picture: profilePicture, username: id } = payload;
 
             return {
                 ...state,
-                authCode: code
+                profile: {
+                    displayName: name,
+                    picture: profilePicture,
+                    username: id
+                }
             };
         }
 

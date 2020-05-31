@@ -4,8 +4,8 @@ export const updateLoginState = loginState => ({
     payload: { loginState }
 });
 
-export const SAVE_AUTH_CODE = 'SAVE_AUTH_CODE';
-export const saveAuthCode = code => ({
-    type: SAVE_AUTH_CODE,
-    payload: { code }
+export const UPDATE_PROFILE = 'UPDATE_PROFILE';
+export const updateProfile = (displayName, picture, username) => ({
+    type: UPDATE_PROFILE,
+    payload: { displayName, picture, username }
 });
