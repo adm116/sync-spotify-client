@@ -26,7 +26,6 @@ const BannerItem = styled.li`
 
 const BannerButtonItem = styled(BannerItem)`
     cursor: pointer;
-    background-color: #1db954;
     float: right;
 `;
 
@@ -53,19 +52,15 @@ const Banner = ({
     const loggingIn = currentLoginState===LOGIN_ENUM.LOGGING_IN;
 
     useEffect(() => {
-        // check if we are in the authorization popout window
-        if (loggingIn && window.opener) {
+        // check if we are still authorizing
+        if (loggingIn) {
             var authWindowUrl = new URL(window.location.href);
             var code = authWindowUrl.searchParams.get("code");
 
             if (code !== null) {
                 loginFunction(code, () => {
-                    window.opener.location.reload();
-                    window.close();
+                    window.history.replaceState({}, document.title, window.location.href.split('?')[0]);
                 });
-            } else {
-                alert('Login failed');
-                // TODO: handle this error
             }
         }
     }, [loginFunction, loggingIn]);

@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Banner from './components/banner';
+import GeneratePlaylistForm from './components/generatePlaylistForm';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { 
@@ -9,13 +10,16 @@ import {
     getProfilePicture
 } from './selectors/loginSelectors';
 import { serverLogin, serverLogout, startLogin} from './thunks/loginThunks';
+import { LOGIN_ENUM } from './constants';
 
 const AppContainer = styled.div`
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    height: 1000px;
+    display: 'block';
+    background-color: #222326;
 `;
 
 const App = ({ 
@@ -33,6 +37,8 @@ const App = ({
                     loginFunction={loginFunction}
                     logoutFunction={logoutFunction}
                     beginLogin={beginLogin}/>
+            <br />
+            { currentLoginState === LOGIN_ENUM.LOGGED_IN ? <GeneratePlaylistForm/> : null }
         </AppContainer>
     );
 };

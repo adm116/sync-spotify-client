@@ -7,9 +7,11 @@ export const serverLogin = (code, callback) => async dispatch => {
 
         const response = await fetch(SERVER_LOGIN_URL, {
             headers: {
-                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             },
             method: 'post',
+            credentials: 'include',
             body
         });
 
@@ -40,7 +42,7 @@ export const startLogin = () => async dispatch => {
         }
     
         const { auth_url } = await response.json();
-        window.open(auth_url, "authWindow","height=600,width=600,modal=yes,alwaysRaised=yes");
+        window.location.replace(auth_url);
 
     } catch (e) {
         dispatch(displayAlert(e));
@@ -51,7 +53,12 @@ export const startLogin = () => async dispatch => {
 export const serverLogout = () => async dispatch => {
     try {
         const response = await fetch(SERVER_LOGOUT_URL, {
-            method: 'post'
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'post',
+            credentials: 'include',
         });
 
         if (!response.ok) {
