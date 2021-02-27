@@ -14,6 +14,12 @@ const GenerateButton = styled.button`
     padding: 20px 30px;
 `;
 
+const TracksLabel = styled.label`
+    color: #fff;
+    font-size: 15px;
+    padding: 20px 20px;
+`;
+
 const generatePlaylists = async (event, trackIds) => {
     event.preventDefault();
 
@@ -54,11 +60,11 @@ const GeneratePlaylistForm = () => {
         <GeneratePlaylistContainer>
             <form onSubmit={(event) => generatePlaylists(event, trackIds)}>
                 <div>
-                    <label>Track IDs (comma separated)</label>
+                    <TracksLabel>Track IDs</TracksLabel>
                     <input
                         type="trackIds"
                         name="trackIds"
-                        placeholder="comma separated list of track ids"
+                        placeholder="comma separated track ids"
                         onChange={handleTrackIdsChange}
                         value={trackIds}
                     />
