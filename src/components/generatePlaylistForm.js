@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SERVER_TOKEN_URL, SERVER_GENERATE_PLAYLIST_URL } from '../constants';
+import { SERVER_GENERATE_PLAYLIST_URL } from '../constants';
 import styled from 'styled-components';
 
 const GeneratePlaylistContainer = styled.div`
@@ -18,33 +18,25 @@ const generatePlaylists = async (event, trackIds) => {
     event.preventDefault();
 
     try {
-        const authResponse = await fetch(SERVER_TOKEN_URL, {
-            method: 'get',
-            credentials: 'include'
-        });
-
-        if (!authResponse.ok) {
-            throw authResponse.statusText;
-        }
-
-        const { success, token } = await authResponse.json();
-        alert(token);
-
-        /* const response = await fetch(SERVER_GENERATE_PLAYLIST_URL, {
+        const body = JSON.stringify({ trackIds });
+        const response = await fetch(SERVER_GENERATE_PLAYLIST_URL, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            method: 'post',
-            credentials: 'include'
+            credentials: 'include',
+            body,
+            method: 'post'
         });
 
         if (!response.ok) {
             throw response.statusText;
         }
 
+        const { success } = await response.json();
+
         // TODO: better message here
-        alert("Success!"); */
+        alert(success);
 
     } catch (e) {
         alert(e);
