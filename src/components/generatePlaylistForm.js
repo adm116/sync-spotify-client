@@ -8,10 +8,11 @@ const GeneratePlaylistContainer = styled.div`
 
 const GenerateButton = styled.button`
     background-color: #fff;
-    border-radius: 30px;
+    border-radius: 20px;
     border: none;
-    font-size: 20px;
-    padding: 20px 30px;
+    font-size: 15px;
+    padding: 5px 5px;
+    margin: 0px 20px;
 `;
 
 const TracksLabel = styled.label`
@@ -20,11 +21,11 @@ const TracksLabel = styled.label`
     padding: 20px 20px;
 `;
 
-const generatePlaylists = async (event, trackIds) => {
+const generatePlaylists = async (event, trackIds, playlistName) => {
     event.preventDefault();
 
     try {
-        const body = JSON.stringify({ trackIds });
+        const body = JSON.stringify({ trackIds, playlistName });
         const response = await fetch(SERVER_GENERATE_PLAYLIST_URL, {
             headers: {
                 'Accept': 'application/json',
@@ -56,10 +57,24 @@ const GeneratePlaylistForm = () => {
         setTrackIds(event.target.value)
     };
 
+    const [playlistName, setPlaylistName] = useState('');
+
+    const handlePlaylistName = event => {
+        setPlaylistName(event.target.value)
+    };
+
     return (
         <GeneratePlaylistContainer>
-            <form onSubmit={(event) => generatePlaylists(event, trackIds)}>
+            <form onSubmit={(event) => generatePlaylists(event, trackIds, playlistName)}>
                 <div>
+                    <TracksLabel>Playlist Name</TracksLabel>
+                    <input
+                        type="playlistName"
+                        name="playlistName"
+                        placeholder="my playlist"
+                        onChange={handlePlaylistName}
+                        value={playlistName}
+                    />
                     <TracksLabel>Track IDs</TracksLabel>
                     <input
                         type="trackIds"
@@ -68,8 +83,8 @@ const GeneratePlaylistForm = () => {
                         onChange={handleTrackIdsChange}
                         value={trackIds}
                     />
+                    <GenerateButton type="Submit">Generate</GenerateButton>
                 </div>
-                <GenerateButton type="Submit">Generate</GenerateButton>
             </form>
         </GeneratePlaylistContainer>
     );
