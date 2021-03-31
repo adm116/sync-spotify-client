@@ -21,11 +21,11 @@ const TracksLabel = styled.label`
     padding: 20px 20px;
 `;
 
-const generatePlaylists = async (event, trackIds, playlistName) => {
+const generatePlaylists = async (event, playlistId) => {
     event.preventDefault();
 
     try {
-        const body = JSON.stringify({ trackIds, playlistName });
+        const body = JSON.stringify({ playlistId });
         const response = await fetch(SERVER_GENERATE_PLAYLIST_URL, {
             headers: {
                 'Accept': 'application/json',
@@ -51,37 +51,23 @@ const generatePlaylists = async (event, trackIds, playlistName) => {
 }
 
 const GeneratePlaylistForm = () => {
-    const [trackIds, setTrackIds] = useState('');
+    const [playlistId, setPlaylistId] = useState('');
 
-    const handleTrackIdsChange = event => {
-        setTrackIds(event.target.value)
-    };
-
-    const [playlistName, setPlaylistName] = useState('');
-
-    const handlePlaylistName = event => {
-        setPlaylistName(event.target.value)
+    const handlePlaylistIdChange = event => {
+        setPlaylistId(event.target.value)
     };
 
     return (
         <GeneratePlaylistContainer>
-            <form onSubmit={(event) => generatePlaylists(event, trackIds, playlistName)}>
+            <form onSubmit={(event) => generatePlaylists(event, playlistId)}>
                 <div>
-                    <TracksLabel>Playlist Name</TracksLabel>
+                    <TracksLabel>Playlist Id</TracksLabel>
                     <input
-                        type="playlistName"
-                        name="playlistName"
-                        placeholder="my playlist"
-                        onChange={handlePlaylistName}
-                        value={playlistName}
-                    />
-                    <TracksLabel>Track IDs</TracksLabel>
-                    <input
-                        type="trackIds"
-                        name="trackIds"
-                        placeholder="comma separated track ids"
-                        onChange={handleTrackIdsChange}
-                        value={trackIds}
+                        type="playlistId"
+                        name="playlistId"
+                        placeholder="playlist id"
+                        onChange={handlePlaylistIdChange}
+                        value={playlistId}
                     />
                     <GenerateButton type="Submit">Generate</GenerateButton>
                 </div>
